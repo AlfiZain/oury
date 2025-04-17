@@ -8,7 +8,7 @@ const ENDPOINTS = {
 
   // Story
   ADD_NEW_STORY: `${CONFIG.BASE_URL}/stories`,
-  GET_ALL_STORIES: (params) => `${CONFIG.BASE_URL}/stories/${params}`,
+  GET_ALL_STORIES: `${CONFIG.BASE_URL}/stories/`,
   DETAIL_STORY: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
 };
 
@@ -69,16 +69,22 @@ export async function addNewStory({ description, photos, lat, lon }) {
   };
 }
 
-export async function getAllStories(page = null, size = null, location = null) {
+export async function getAllStories(page, size, location) {
   const accessToken = getAccessToken();
 
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    size: size.toString(),
-    location: location.toString(),
-  });
+  let url = ENDPOINTS.GET_ALL_STORIES;
 
-  const fetchResponse = await fetch(ENDPOINTS.GET_ALL_STORIES(queryParams), {
+  const queryParams = new URLSearchParams();
+
+  if (page !== undefined && page !== null) queryParams.append("page", page);
+  if (size !== undefined && size !== null) queryParams.append("size", size);
+  if (location !== undefined && location !== null) queryParams.append("location", location);
+
+  if ([...queryParams].length > 0) {
+    url += `?${queryParams.toString()}`;
+  }
+
+  const fetchResponse = await fetch(url, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
