@@ -1,5 +1,5 @@
 import * as StoryAPI from "../../data/api.js";
-import { generateStoriesListEmptyTemplate, generateStoriesListErrorTemplate, generateStoryItemTemplate } from "../../template.js";
+import { generateLoaderAbsoluteTemplate, generateStoriesListEmptyTemplate, generateStoriesListErrorTemplate, generateStoryItemTemplate } from "../../template.js";
 import HomePresenter from "./home-presenter.js";
 
 export default class HomePage {

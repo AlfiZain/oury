@@ -25,3 +25,42 @@ export function putAccessToken(token) {
     return false;
   }
 }
+
+export function removeAccessToken() {
+  try {
+    localStorage.removeItem(CONFIG.ACCESS_TOKEN_KEY);
+    return true;
+  } catch (error) {
+    console.error("getLogout: error: ", error);
+    return false;
+  }
+}
+
+const unauthenticatedRoutesOnly = ["/login", "/register"];
+
+export function checkUnauthenticatedRoutesOnly(page) {
+  const url = getActiveRoute();
+  const isLogin = !!getAccessToken();
+
+  if (unauthenticatedRoutesOnly.includes(url) && isLogin) {
+    location.hash = "/";
+    return null;
+  }
+
+  return page;
+}
+
+export function checkAuthenticatedRoute(page) {
+  const isLogin = !!getAccessToken();
+
+  if (!isLogin) {
+    location.hash = "/login";
+    return null;
+  }
+
+  return page;
+}
+
+export function getLogout() {
+  removeAccessToken();
+}

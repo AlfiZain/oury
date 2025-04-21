@@ -1,3 +1,6 @@
+import { showFormattedDate } from "./utils";
+
+// Story Item Template
 export function generateStoryItemTemplate({ id, name, description, photoUrl, createdAt, lat, lon }) {
   return `
     <div tabindex="0" class="story-item" data-storyid="${id}">
@@ -24,6 +27,7 @@ export function generateStoryItemTemplate({ id, name, description, photoUrl, cre
     `;
 }
 
+// Empty Stories Template
 export function generateStoriesListEmptyTemplate() {
   return `
     <div id="stories-list-empty" class="stories-list__empty">
@@ -32,12 +36,7 @@ export function generateStoriesListEmptyTemplate() {
     `;
 }
 
-export function generateLoaderAbsoluteTemplate() {
-  return `
-    <div class="loader loader-absolute"></div>
-    `;
-}
-
+// Error Stories Template
 export function generateStoriesListErrorTemplate(message) {
   return `
       <div id="stories-list-error" class="stories-list__error">
@@ -45,4 +44,29 @@ export function generateStoriesListErrorTemplate(message) {
         <p>${message ? message : "Gunakan jaringan lain atau laporkan error ini."}</p>
       </div>
     `;
+}
+
+// Loader Template
+export function generateLoaderAbsoluteTemplate() {
+  return `
+    <div class="loader loader-absolute"></div>
+    `;
+}
+
+// Navigation Template
+// Unauthenticated
+export function generateUnauthenticatedNavigationListTemplate() {
+  return `
+    <li><a id="login-button" href="#/login">Login</a></li>
+    <li><a id="register-button" href="#/register">Register</a></li>
+  `;
+}
+
+// Authenticated
+export function generateAuthenticatedNavigationListTemplate() {
+  return `
+  <li><a id="home-button"><i class="fa-solid fa-house"></i>Home</a></li>
+  <li><a id="create-story-button"><i class="fa-solid fa-plus"></i>Create a Story</a></li>
+  <li><a id="logout-button"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+  `;
 }

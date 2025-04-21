@@ -8,7 +8,7 @@ const ENDPOINTS = {
 
   // Story
   ADD_NEW_STORY: `${CONFIG.BASE_URL}/stories`,
-  GET_ALL_STORIES: `${CONFIG.BASE_URL}/stories/`,
+  GET_ALL_STORIES: `${CONFIG.BASE_URL}/stories`,
   DETAIL_STORY: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
 };
 
@@ -17,6 +17,7 @@ export async function getRegistered({ name, email, password }) {
 
   const fetchResponse = await fetch(ENDPOINTS.REGISTER, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: data,
   });
 
@@ -33,6 +34,7 @@ export async function getLogin({ email, password }) {
 
   const fetchResponse = await fetch(ENDPOINTS.LOGIN, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: data,
   });
 
