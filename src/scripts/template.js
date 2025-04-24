@@ -65,8 +65,8 @@ export function generateUnauthenticatedNavigationListTemplate() {
 // Authenticated
 export function generateAuthenticatedNavigationListTemplate() {
   return `
-  <li><a id="home-button"><i class="fa-solid fa-house"></i>Home</a></li>
-  <li><a id="create-story-button"><i class="fa-solid fa-plus"></i>Create a Story</a></li>
-  <li><a id="logout-button"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+  <li><a id="home-button" href="#/"><i class="fa-solid fa-house"></i>Home</a></li>
+  <li><a id="create-story-button" href="#/new"><i class="fa-solid fa-plus"></i>Create a Story</a></li>
+  <li><a id="logout-button" href="#/logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
   `;
 }
