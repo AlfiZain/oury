@@ -46,16 +46,18 @@ export async function getLogin({ email, password }) {
   };
 }
 
-export async function addNewStory({ description, photos, lat, lon }) {
+export async function addNewStory({ description, photo, lat, lon }) {
   const accessToken = getAccessToken();
+  console.log(description);
+  console.log(photo);
+  console.log(lat);
+  console.log(lon);
 
   const formData = new FormData();
   formData.set("description", description);
+  formData.set("photo", photo);
   formData.set("lat", lat);
   formData.set("lon", lon);
-  photos.forEach((photo) => {
-    formData.append("photo", photo);
-  });
 
   const fetchResponse = await fetch(ENDPOINTS.ADD_NEW_STORY, {
     method: "POST",

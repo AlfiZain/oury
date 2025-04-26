@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .container {
@@ -84,7 +84,7 @@ header {
   padding: 6px 10px;
 
   display: block;
-  
+
   color: #333;
   text-decoration: none;
 }
@@ -96,6 +96,10 @@ header {
 /* MAIN */
 .main-content {
   padding-block: 20px;
+}
+
+#map {
+  min-height: 600px;
 }
 
 /* Write your styles more here */

@@ -1,13 +1,16 @@
 import * as StoryAPI from "../../data/api.js";
+import { generateLoaderAbsoluteTemplate } from "../../template.js";
 import Camera from "../../utils/camera.js";
 import NewPresenter from "./new-presenter.js";
+import Map from "../../utils/map.js";
 
 export default class NewPage {
   #presenter;
   #form;
-  #isCameraOpen;
+  #isCameraOpen = false;
   #camera;
   #takenPicture;
+  #map = null;
 
   async render() {
     return `
@@ -121,7 +124,25 @@ export default class NewPage {
     });
     this.#takenPicture = "";
 
+    this.#presenter.showNewFormMap();
     this.#setupForm();
+  }
+
+  #formValidation(data) {
+    if (!data.description) {
+      throw new Error("Description is required");
+    }
+    if (!data.photo) {
+      throw new Error("Photo is required");
+    }
+    if (data.photo.size > 1024 * 1024) {
+      throw new Error("Photo size must be less than 1MB");
+    }
+    if (!data.photo.type.startsWith("image/")) {
+      throw new Error("Only image files are allowed");
+    }
+
+    return data;
   }
 
   #setupForm() {
@@ -129,14 +150,23 @@ export default class NewPage {
     this.#form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const data = {
-        description: this.#form.elements.namedItem("description").value,
-        photo: this.#form.elements.namedItem("photo").value,
-        lat: this.#form.elements.namedItem("latitude").value,
-        long: this.#form.elements.namedItem("longitude").value,
-      };
+      try {
+        const data = {
+          description: this.#form.elements.namedItem("description").value,
+          photo: this.#takenPicture.blob,
+          lat: this.#form.elements.namedItem("latitude").value,
+          lon: this.#form.elements.namedItem("longitude").value,
+        };
+        console.log("Form data:", data);
 
-      await this.#presenter.postNewStory(data);
+        const validatedData = this.#formValidation(data);
+        console.log("Validated data:", validatedData);
+
+        await this.#presenter.postNewStory(validatedData);
+      } catch (error) {
+        alert(error.message);
+        console.error("Form submission error:", error);
+      }
     });
 
     // Manual photo upload
@@ -203,8 +233,10 @@ export default class NewPage {
 
   // Populate taken pictures to view
   async #populateTakenPicture() {
-    const imageUrl = URL.createObjectURL(this.#takenPicture.blob);
-    const html = `
+    const photoTaken = document.getElementById("photo-taken");
+    try {
+      const imageUrl = URL.createObjectURL(this.#takenPicture.blob);
+      const html = `
         <li class="new-form__photo__outputs-item">
           <button type="button" data-deletepictureid="${this.#takenPicture.id}" class="new-form__photo__outputs-item__delete-btn">
             <img src="${imageUrl}" alt="Your Photo">
@@ -212,17 +244,52 @@ export default class NewPage {
         </li>
         `;
 
-    const photoTaken = document.getElementById("photo-taken");
-    photoTaken.innerHTML = html;
+      photoTaken.innerHTML = html;
 
-    // Add event listener for button to delete the photo
-    document.querySelector("button[data-deletepictureid]").addEventListener("click", () => {
-      this.#takenPicture = "";
+      // Add event listener for button to delete the photo
+      document.querySelector("button[data-deletepictureid]").addEventListener("click", () => {
+        this.#takenPicture = "";
 
-      // Clear taken picture
+        // Clear taken picture
+        photoTaken.innerHTML = "";
+        console.log(`Picture successfully deleted`);
+      });
+    } catch (error) {
       photoTaken.innerHTML = "";
-      console.log(`Picture successfully deleted`);
+      console.error("#populateTakenPicture: error", error);
+    }
+  }
+
+  // Inital map
+  async initialMap() {
+    this.#map = await Map.build("#map", {
+      zoom: 15,
+      locate: true,
     });
+
+    // Preparing marker for select coordinate
+    const centerCoordinate = this.#map.getCenter();
+
+    this.#updateLatLangInput(centerCoordinate.latitude, centerCoordinate.longitude);
+
+    const draggableMarker = this.#map.addMarker([centerCoordinate.latitude, centerCoordinate.longitude], { draggable: true });
+
+    draggableMarker.addEventListener("move", (event) => {
+      const coordinate = event.target.getLatLng();
+      this.#updateLatLangInput(coordinate.lat, coordinate.lng);
+    });
+
+    this.#map.addMapEventListener("click", (event) => {
+      draggableMarker.setLatLng(event.latlng);
+
+      // Keep center with user view
+      event.sourceTarget.flyTo(event.latlng);
+    });
+  }
+
+  #updateLatLangInput(latitude, longitude) {
+    this.#form.elements.namedItem("latitude").value = latitude;
+    this.#form.elements.namedItem("longitude").value = longitude;
   }
 
   storeSuccessfully(message) {

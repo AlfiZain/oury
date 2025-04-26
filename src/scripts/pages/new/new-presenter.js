@@ -4,17 +4,28 @@ export default class NewPresenter {
 
   constructor({ view, model }) {
     this.#view = view;
-    this.model = model;
+    this.#model = model;
   }
 
-  async postNewStory({ description, photo, latitude, longitude }) {
+  async showNewFormMap() {
+    this.#view.showMapLoading();
+    try {
+      await this.#view.initialMap();
+    } catch (error) {
+      console.error("showNewFormMap: ", error);
+    } finally {
+      this.#view.hideMapLoading();
+    }
+  }
+
+  async postNewStory({ description, photo, lat, lon }) {
     this.#view.showSubmitLoadingButton();
     try {
       const data = {
         description: description,
         photo: photo,
-        lat: latitude,
-        long: longitude,
+        lat: lat,
+        lon: lon,
       };
       const response = await this.#model.addNewStory(data);
 
