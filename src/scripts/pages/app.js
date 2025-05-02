@@ -22,11 +22,11 @@ class App {
   #renderHeader() {
     this.#header.innerHTML = `
       <div class="main-header container"
-        <a href="#/"><img class="logo" src="/images/oury-logo-fit.png" alt="" /></a>
+        <a href="#/"><img class="logo" src="images/oury-logo-fit.png" alt="Oury" /></a>
 
         <nav id="navigation-drawer" class="navigation-drawer">
           <div class="header-drawer">
-            <a href="#/"><img class="logo" src="/images/oury-logo-fit.png" alt="" /></a>
+            <a href="#/"><img class="logo" src="images/oury-logo-fit.png" alt="Oury" /></a>
             <button id="close-button" class="close-button">X</button>
           </div>
           <ul id="nav-list" class="nav-list"></ul>

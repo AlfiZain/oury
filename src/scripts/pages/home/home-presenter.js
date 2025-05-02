@@ -35,8 +35,6 @@ export default class HomePresenter {
 
       const stories = await Promise.all(response.listStory.map(async (story) => await reportMapper(story)));
 
-      console.log(stories);
-
       this.#view.populateStoriesList(response.message, stories);
     } catch (error) {
       console.error("showStoriesList: error: ", error);
