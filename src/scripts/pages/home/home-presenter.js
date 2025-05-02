@@ -1,3 +1,5 @@
+import { reportMapper } from "../../data/api-mapper";
+
 export default class HomePresenter {
   #view;
   #model;
@@ -7,9 +9,22 @@ export default class HomePresenter {
     this.#model = model;
   }
 
-  async showStoriesList() {
+  async showStoriesListMap() {
+    this.#view.showMapLoading();
+    try {
+      await this.#view.initialMap();
+    } catch (error) {
+      console.error("showStoriesListMap: error:", error);
+    } finally {
+      this.#view.hideMapLoading();
+    }
+  }
+
+  async initialStoriesAndMap() {
     this.#view.showLoading();
     try {
+      await this.showStoriesListMap();
+
       const response = await this.#model.getAllStories();
 
       if (!response.ok) {
@@ -18,7 +33,11 @@ export default class HomePresenter {
         return;
       }
 
-      this.#view.populateStoriesList(response.message, response.listStory);
+      const stories = await Promise.all(response.listStory.map(async (story) => await reportMapper(story)));
+
+      console.log(stories);
+
+      this.#view.populateStoriesList(response.message, stories);
     } catch (error) {
       console.error("showStoriesList: error: ", error);
       this.#view.populateStoriesListError(error.message);

@@ -1,14 +1,25 @@
 import * as StoryAPI from "../../data/api.js";
 import { generateLoaderAbsoluteTemplate, generateStoriesListEmptyTemplate, generateStoriesListErrorTemplate, generateStoryItemTemplate } from "../../template.js";
+import Map from "../../utils/map.js";
 import HomePresenter from "./home-presenter.js";
 
 export default class HomePage {
   #presenter = null;
+  #map = null;
 
   async render() {
     return `
-      <section class="container">
-        <div class="stories-list__container">
+      <section id="map-section" class="map-section">
+        <h1 class="map-title">Authors Across the Map</h1>
+        <div class="map-container">
+          <div id="map" class="map"></div>
+          <div id="map-loading" class="map-loading"></div>
+        </div>
+      </section>
+
+      <section id="stories-section" class="stories-section">
+        <h2 class="stories-title">Our Stories</h2>
+        <div class="stories-list-container">
           <div id="stories-list" class="stories-list"></div>
           <div id="stories-list-loading-container"></div>
         </div>
@@ -22,7 +33,7 @@ export default class HomePage {
       model: StoryAPI,
     });
 
-    await this.#presenter.showStoriesList();
+    await this.#presenter.initialStoriesAndMap();
   }
 
   populateStoriesList(message, stories) {
@@ -32,6 +43,13 @@ export default class HomePage {
     }
 
     const html = stories.reduce((accumulator, story) => {
+      if (this.#map && story.lat && story.lon) {
+        const coordinate = [story.lat, story.lon];
+        const markerOptions = { alt: story.name };
+        const popupOptions = { content: story.name };
+
+        this.#map.addMarker(coordinate, markerOptions, popupOptions);
+      }
       return accumulator.concat(
         generateStoryItemTemplate({
           ...story,
@@ -42,12 +60,33 @@ export default class HomePage {
     document.getElementById("stories-list").innerHTML = `${html}`;
   }
 
+  async initialMap() {
+    this.#map = await Map.build("#map", {
+      zoom: 10,
+      location: true,
+    });
+  }
+
   populateStoriesListEmpty() {
-    document.getElementById("stories-list").innerHTML = generateStoriesListEmptyTemplate();
+    document.getElementById("map-section").classList.add("hidden");
+    const storyList = document.getElementById("stories-list");
+    storyList.classList.add("empty");
+    storyList.innerHTML = generateStoriesListEmptyTemplate();
   }
 
   populateStoriesListError(message) {
+    document.getElementById("map-section").classList.add("hidden");
+    const storyList = document.getElementById("stories-list");
+    storyList.classList.add("error");
     document.getElementById("stories-list").innerHTML = generateStoriesListErrorTemplate(message);
+  }
+
+  showMapLoading() {
+    document.getElementById("map-loading").innerHTML = generateLoaderAbsoluteTemplate();
+  }
+
+  hideMapLoading() {
+    document.getElementById("map-loading").innerHTML = "";
   }
 
   showLoading() {

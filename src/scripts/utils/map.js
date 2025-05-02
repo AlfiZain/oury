@@ -129,7 +129,6 @@ export default class Map {
 
   // Create custome icon
   createIcon(options = {}) {
-    console.log(options);
     return icon({
       ...Icon.Default.prototype.options,
       iconRetinaUrl: markerIcon2x,

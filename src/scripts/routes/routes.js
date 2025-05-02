@@ -3,14 +3,14 @@ import AboutPage from "../pages/about/about-page";
 import LoginPage from "../pages/auth/login/login-page";
 import { checkAuthenticatedRoute, checkUnauthenticatedRoutesOnly } from "../utils/auth";
 import RegisterPage from "../pages/auth/register/register-page";
-import NewPage from "../pages/new/new-page";
+import NewStoryPage from "../pages/new/new-story-page";
 
 const routes = {
   "/login": () => checkUnauthenticatedRoutesOnly(new LoginPage()),
   "/register": () => checkUnauthenticatedRoutesOnly(new RegisterPage()),
 
   "/": () => checkAuthenticatedRoute(new HomePage()),
-  "/new": () => checkAuthenticatedRoute(new NewPage()),
+  "/new": () => checkAuthenticatedRoute(new NewStoryPage()),
   "/about": () => checkAuthenticatedRoute(new AboutPage()),
 };
 

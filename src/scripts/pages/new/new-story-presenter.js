@@ -1,4 +1,4 @@
-export default class NewPresenter {
+export default class NewStoryPresenter {
   #view;
   #model;
 
