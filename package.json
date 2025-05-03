@@ -1,5 +1,5 @@
 {
-  "name": "app-starter-project-with-webpack",
+  "name": "oury",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -8,7 +8,7 @@
     "serve": "http-server dist"
   },
   "keywords": [],
-  "author": "YOUR_NAME <yourmail@mail.com>",
+  "author": "Alfi Zain <muhammadalfizain@mail.com>",
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-env": "^7.26.9",
