@@ -11,6 +11,10 @@ export function sleep(time = 1000) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+export function setupSkipToContent(element, content) {
+  element.addEventListener("click", () => content.focus());
+}
+
 export function transitionHelper({ skipTransition = false, updateDOM }) {
   // Instantly update dom if startViewTransition is not supported or skipTransition is true
   if (skipTransition || !document.startViewTransition) {

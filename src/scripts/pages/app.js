@@ -1,7 +1,7 @@
 import routes from "../routes/routes";
 import { getActiveRoute } from "../routes/url-parser";
 import { generateAuthenticatedNavigationListTemplate, generateUnauthenticatedNavigationListTemplate } from "../template";
-import { transitionHelper } from "../utils";
+import { setupSkipToContent, transitionHelper } from "../utils";
 import { getAccessToken, getLogout } from "../utils/auth";
 
 class App {
@@ -10,44 +10,85 @@ class App {
   #drawerButton = null;
   #closeButton = null;
   #navigationDrawer = null;
+  #skipToContent = null;
 
   constructor({ header, content }) {
     this.#header = header;
     this.#content = content;
 
     this.#renderHeader();
-    this.#setupDrawer();
+    this.#init();
   }
 
   #renderHeader() {
     this.#header.innerHTML = `
-      <div class="main-header container"
-        <a href="#/"><img class="logo" src="images/oury-logo-fit.png" alt="Oury" /></a>
+      <button id="skip-link" class="skip-link">Skip to Main Content</button>
+      <div class="main-header container">
+        <a id="header-icon" href="#/">
+          <img class="logo" src="images/oury-logo-fit.png" alt="Oury" />
+        </a>
 
-        <nav id="navigation-drawer" class="navigation-drawer">
+        <nav id="navigation-drawer" class="navigation-drawer" aria-label="Main Navigation" aria-hidden="true" inert>
           <div class="header-drawer">
-            <a href="#/"><img class="logo" src="images/oury-logo-fit.png" alt="Oury" /></a>
-            <button id="close-button" class="close-button">X</button>
+            <a id="navigation-drawer-icon" href="#/"><img class="logo" src="images/oury-logo-fit.png" alt="Oury" /></a>
+            <button id="close-button" class="close-button" aria-label="Close Navigation Menu">X</button>
           </div>
           <ul id="nav-list" class="nav-list"></ul>
         </nav>
 
-        <button id="drawer-button" class="drawer-button">☰</button>
+        <button id="drawer-button" class="drawer-button" aria-label="Open Navigation Menu" aria-expanded="false" aria-controls="navigation-drawer">☰</button>
       </div>
     `;
 
     this.#drawerButton = document.getElementById("drawer-button");
     this.#closeButton = document.getElementById("close-button");
     this.#navigationDrawer = document.getElementById("navigation-drawer");
+    this.#skipToContent = document.getElementById("skip-link");
+  }
+
+  #init() {
+    setupSkipToContent(this.#skipToContent, this.#content);
+    this.#setupDrawer();
+  }
+
+  #applyDrawerAccessibility() {
+    const isDesktop = window.matchMedia("(min-width: 64rem)").matches;
+
+    if (isDesktop) {
+      // On desktop drawer is always visible and focusable
+      this.#navigationDrawer.removeAttribute("inert");
+      this.#navigationDrawer.setAttribute("aria-hidden", "false");
+    } else {
+      // On mobile drawer can only focus when open
+      const isOpen = this.#navigationDrawer.classList.contains("open");
+      if (isOpen) {
+        this.#navigationDrawer.removeAttribute("inert");
+        this.#navigationDrawer.setAttribute("aria-hidden", "false");
+        document.getElementById("navigation-drawer-icon").focus();
+      } else {
+        this.#navigationDrawer.setAttribute("inert", "");
+        this.#navigationDrawer.setAttribute("aria-hidden", "true");
+      }
+    }
   }
 
   #setupDrawer() {
     this.#drawerButton.addEventListener("click", () => {
       this.#navigationDrawer.classList.add("open");
+      this.#drawerButton.setAttribute("aria-expanded", "true");
+      this.#applyDrawerAccessibility();
     });
 
     this.#closeButton.addEventListener("click", () => {
       this.#navigationDrawer.classList.remove("open");
+      this.#drawerButton.setAttribute("aria-expanded", "false");
+      this.#applyDrawerAccessibility();
+    });
+
+    this.#applyDrawerAccessibility();
+
+    window.addEventListener("resize", () => {
+      this.#applyDrawerAccessibility();
     });
   }
 
