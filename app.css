@@ -272,6 +272,7 @@ header {
   box-shadow: 0 0 2px 1px #00000022;
   padding: 1.25rem;
   border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .map-section.hidden {
@@ -293,13 +294,13 @@ header {
 
 .stories-list {
   display: grid;
-  grid-template-columns: repeat(1, minmax(250px, 1fr));
+  grid-template-columns: repeat(1, minmax(200px, 1fr));
   gap: 1rem;
 }
 
 .stories-list.empty,
 .stories-list.error {
-  grid-template-columns: repeat(1, minmax(250px, 1fr));
+  grid-template-columns: repeat(1, minmax(200px, 1fr));
 }
 
 .stories-list-error,
@@ -630,8 +631,9 @@ select {
 .delete-photo-btn img {
   display: block;
   width: 100%;
-  max-width: 640px;
   height: 100%;
+  max-width: 640px;
+  max-height: 480px;
   object-fit: cover;
   object-position: center;
   border-radius: 0.25rem;
@@ -715,7 +717,7 @@ select {
   }
 
   .stories-list {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 
   .photo-upload-button-container {
@@ -785,7 +787,7 @@ select {
   }
 
   .stories-list {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
   }
 
   .form-container {
