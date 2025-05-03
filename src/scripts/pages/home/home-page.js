@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import * as StoryAPI from "../../data/api.js";
 import { generateLoaderAbsoluteTemplate, generateStoriesListEmptyTemplate, generateStoriesListErrorTemplate, generateStoryItemTemplate } from "../../template.js";
 import Map from "../../utils/map.js";
@@ -78,6 +79,11 @@ export default class HomePage {
     document.getElementById("map-section").classList.add("hidden");
     const storyList = document.getElementById("stories-list");
     storyList.classList.add("error");
+    Swal.fire({
+      icon: "error",
+      title: "Populate Stories List Failed",
+      text: message,
+    });
     document.getElementById("stories-list").innerHTML = generateStoriesListErrorTemplate(message);
   }
 

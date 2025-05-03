@@ -3,6 +3,7 @@ import { generateLoaderAbsoluteTemplate } from "../../template.js";
 import Camera from "../../utils/camera.js";
 import NewStoryPresenter from "./new-story-presenter.js";
 import Map from "../../utils/map.js";
+import Swal from "sweetalert2";
 
 export default class NewStoryPage {
   #presenter;
@@ -99,35 +100,53 @@ export default class NewStoryPage {
 
   #formValidation(data) {
     if (!data.description) throw new Error("Description is required");
-    if (!data.photo) throw new Error("Photo is required");
-    if (data.photo.size > 1024 * 1024) throw new Error("Photo size must be less than 1MB");
-    if (!data.photo.type.startsWith("image/")) throw new Error("Only image files are allowed");
-    return data;
+    if (!data.photo || !data.photo.blob) throw new Error("Photo is required");
+    if (data.photo.blob.size > 1024 * 1024) throw new Error("Photo size must be less than 1MB");
+    if (!data.photo.blob.type.startsWith("image/")) throw new Error("Only image files are allowed");
+    return {
+      ...data,
+      photo: data.photo.blob,
+    };
   }
 
   #setupForm() {
     this.#form = document.getElementById("new-story-form");
     this.#form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      try {
-        const data = {
-          description: this.#form.elements.description.value,
-          photo: this.#takenPicture.blob,
-          lat: this.#form.elements.latitude.value,
-          lon: this.#form.elements.longitude.value,
-        };
-        const validated = this.#formValidation(data);
-        await this.#presenter.postNewStory(validated);
-      } catch (error) {
-        alert(error.message);
+      const result = await Swal.fire({
+        title: "Do you want to save the changes?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Save",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const data = {
+            description: this.#form.elements.description.value,
+            photo: this.#takenPicture,
+            lat: this.#form.elements.latitude.value,
+            lon: this.#form.elements.longitude.value,
+          };
+          const validated = this.#formValidation(data);
+          await this.#presenter.postNewStory(validated);
+        } catch (error) {
+          console.log(error);
+          this.storeFailed(error.message);
+        }
       }
     });
 
     // Photo upload listeners
     document.getElementById("photo-upload-button").addEventListener("click", () => document.getElementById("photo-upload-input").click());
     document.getElementById("photo-upload-input").addEventListener("change", async (event) => {
-      await this.#addTakenPicture(event.target.files[0]);
-      await this.#populateTakenPicture();
+      if (event.target.files.length > 0) {
+        await this.#addTakenPicture(event.target.files[0]);
+        await this.#populateTakenPicture();
+      } else {
+        this.#takenPicture = null;
+        document.getElementById("photo-preview").innerHTML = "";
+      }
     });
 
     // Camera toggle
@@ -165,6 +184,7 @@ export default class NewStoryPage {
   }
 
   async #populateTakenPicture() {
+    if (!this.#takenPicture.blob) return;
     const photoPreview = document.getElementById("photo-preview");
     const url = URL.createObjectURL(this.#takenPicture.blob);
 
@@ -206,12 +226,16 @@ export default class NewStoryPage {
 
   storeSuccessfully(message) {
     console.log(message);
-    this.clearForm();
     location.hash = "/";
+    this.clearForm();
   }
 
   storeFailed(message) {
-    alert(message);
+    Swal.fire({
+      icon: "error",
+      title: "Post New Story Failed",
+      text: message,
+    });
   }
 
   clearForm() {

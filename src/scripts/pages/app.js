@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import routes from "../routes/routes";
 import { getActiveRoute } from "../routes/url-parser";
 import { generateAuthenticatedNavigationListTemplate, generateUnauthenticatedNavigationListTemplate } from "../template";
@@ -68,6 +69,7 @@ class App {
       } else {
         this.#navigationDrawer.setAttribute("inert", "");
         this.#navigationDrawer.setAttribute("aria-hidden", "true");
+        this.#closeButton.blur();
       }
     }
   }
@@ -108,12 +110,19 @@ class App {
     logoutButton.addEventListener("click", (event) => {
       event.preventDefault();
 
-      if (confirm("Are you sure you want to log out?")) {
-        getLogout();
+      Swal.fire({
+        title: "Are you sure you want to log out?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          getLogout();
 
-        // Redirect
-        location.hash = "/login";
-      }
+          // Redirect
+          location.hash = "/login";
+        }
+      });
     });
   }
 

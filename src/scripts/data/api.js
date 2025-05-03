@@ -48,10 +48,6 @@ export async function getLogin({ email, password }) {
 
 export async function addNewStory({ description, photo, lat, lon }) {
   const accessToken = getAccessToken();
-  console.log(description);
-  console.log(photo);
-  console.log(lat);
-  console.log(lon);
 
   const formData = new FormData();
   formData.set("description", description);
