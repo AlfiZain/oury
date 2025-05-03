@@ -128,6 +128,25 @@ header {
   overflow: hidden;
 }
 
+.skip-link {
+  background: #53aaef;
+  padding: 1rem;
+
+  position: absolute;
+
+  color: #ffffff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+
+  transform: translateY(-150%);
+}
+
+.skip-link:focus,
+.skip-link:focus-within {
+  transform: translateY(0%);
+}
+
 /* HEADER */
 .main-header {
   padding-block: 1rem;
