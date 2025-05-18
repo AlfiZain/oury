@@ -1,8 +1,8 @@
 {
-  "id": "/#/",
-  "start_url": "/#/",
+  "id": "/?source=pwa#/",
   "scope": "/",
-  "name": "Oury",
+  "start_url": "/?source=pwa#/",
+  "name": "Oury App",
   "short_name": "Oury",
   "description": "Oury is a web-based application that allows users to share their personal stories easily. The app is designed to be a platform for sharing meaningful experiences with others.",
   "display": "standalone",
