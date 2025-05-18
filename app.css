@@ -784,7 +784,7 @@ select {
 /* Laptop Small (1024px) */
 @media screen and (width >= 64rem) {
   .container {
-    padding-inline: 8rem;
+    padding-inline: 6rem;
   }
 
   .header-drawer {

@@ -1,0 +1,115 @@
+{
+  "id": "/#/",
+  "start_url": "/#/",
+  "scope": "/",
+  "name": "Oury",
+  "short_name": "Oury",
+  "description": "Oury is a web-based application that allows users to share their personal stories easily. The app is designed to be a platform for sharing meaningful experiences with others.",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#53AAEF",
+  "icons": [
+    {
+      "src": "icon/oury_icon_x144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "icon/oury_icon_x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/Oury_Desktop_001.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/Oury_Desktop_002.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/Oury_Desktop_003.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/Oury_Desktop_004.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/Oury_Desktop_005.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/Oury_Mobile_001.jpeg",
+      "sizes": "1080x2280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/Oury_Mobile_002.jpeg",
+      "sizes": "1080x2280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/Oury_Mobile_003.jpeg",
+      "sizes": "1080x2280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/Oury_Mobile_004.jpeg",
+      "sizes": "1080x2280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/Oury_Mobile_005.jpeg",
+      "sizes": "1080x2280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Create a Story",
+      "short_name": "Create",
+      "description": "Share a new story",
+      "url": "/?source=pwa#/new",
+      "icons": [
+        {
+          "src": "icon/add-x512.png",
+          "type": "image/png",
+          "sizes": "512x512"
+        }
+      ]
+    },
+    {
+      "name": "Saved Story",
+      "short_name": "Saved",
+      "description": "View saved stories",
+      "url": "/?source=pwa#/bookmark",
+      "icons": [
+        {
+          "src": "icon/bookmark-x512.png",
+          "type": "image/png",
+          "sizes": "512x512"
+        }
+      ]
+    }
+  ]
+}
