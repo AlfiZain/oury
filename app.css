@@ -126,15 +126,23 @@ textarea:not([rows]) {
   }
 }
 
+::view-transition-old(root) {
+  animation-duration: 500ms;
+}
+
+::view-transition-new(root) {
+  animation-duration: 500ms;
+}
+
 ::view-transition-old(map) {
   animation-name: full-slide-to-left;
-  animation-duration: 300ms;
+  animation-duration: 500ms;
   animation-timing-function: ease-out;
 }
 
 ::view-transition-new(map) {
   animation-name: full-slide-from-right;
-  animation-duration: 300ms;
+  animation-duration: 500ms;
   animation-timing-function: ease-out;
 }
 
@@ -197,13 +205,17 @@ header {
   inset-inline-start: 0;
 
   transform: translateX(-100%);
-  transition: transform 200ms;
+  opacity: 0;
+  transition: opacity 150ms, transform 0ms 150ms;
 
-  z-index: 100;
+  z-index: 9999;
 }
 
 .navigation-drawer.open {
   transform: translateX(0);
+  opacity: 1;
+
+  transition: all 200ms;
 }
 
 .drawer-button,
@@ -252,6 +264,11 @@ header {
 
 .nav-list .nav-link:hover {
   text-decoration: underline;
+}
+
+.subscribe-btn,
+.unsubscribe-btn {
+  width: 100%;
 }
 
 /* MAIN */
@@ -700,15 +717,25 @@ select {
 
 /* Large Mobile (425px) */
 @media screen and (width >= 26.56rem) {
-  .container {
+  .container,
+  .navigation-drawer {
     padding-inline: 2rem;
+  }
+
+  .navigation-drawer {
+    width: 75%;
   }
 }
 
 /* Large Tablet (768px) */
 @media screen and (width >= 48rem) {
-  .container {
+  .container,
+  .navigation-drawer {
     padding-inline: 4rem;
+  }
+
+  .navigation-drawer {
+    width: 50%;
   }
 
   .map-section,
@@ -776,10 +803,14 @@ select {
     position: static;
     box-shadow: none;
     transform: translateX(0);
+    opacity: 1;
+
+    z-index: 100;
   }
 
   .nav-list {
     flex-direction: row;
+    align-items: center;
   }
 
   .drawer-button {
