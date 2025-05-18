@@ -1,9 +1,10 @@
 import Swal from "sweetalert2";
 import routes from "../routes/routes";
 import { getActiveRoute } from "../routes/url-parser";
-import { generateAuthenticatedNavigationListTemplate, generateUnauthenticatedNavigationListTemplate } from "../template";
-import { setupSkipToContent, transitionHelper } from "../utils";
+import { generateAuthenticatedNavigationListTemplate, generateUnauthenticatedNavigationListTemplate, generateSubscribeButtonTemplate, generateUnsubscribeButtonTemplate } from "../template";
+import { setupSkipToContent, transitionHelper, isServiceWorkerAvailable } from "../utils";
 import { getAccessToken, getLogout } from "../utils/auth";
+import { isCurrentPushSubscriptionAvailable, subscribe, unsubscribe } from "../utils/notification-helper";
 
 class App {
   #header = null;
@@ -74,17 +75,44 @@ class App {
     }
   }
 
+  #openDrawerEventHandler() {
+    this.#navigationDrawer.classList.add("open");
+    this.#drawerButton.setAttribute("aria-expanded", "true");
+    this.#applyDrawerAccessibility();
+  }
+
+  #closeDrawerEventHandler() {
+    this.#navigationDrawer.classList.remove("open");
+    this.#drawerButton.setAttribute("aria-expanded", "false");
+    this.#applyDrawerAccessibility();
+  }
+
   #setupDrawer() {
     this.#drawerButton.addEventListener("click", () => {
-      this.#navigationDrawer.classList.add("open");
-      this.#drawerButton.setAttribute("aria-expanded", "true");
-      this.#applyDrawerAccessibility();
+      if (!this.#navigationDrawer.classList.contains("open")) {
+        this.#openDrawerEventHandler();
+        return;
+      }
+      this.#closeDrawerEventHandler();
     });
 
     this.#closeButton.addEventListener("click", () => {
-      this.#navigationDrawer.classList.remove("open");
-      this.#drawerButton.setAttribute("aria-expanded", "false");
-      this.#applyDrawerAccessibility();
+      this.#closeDrawerEventHandler();
+    });
+
+    document.body.addEventListener("click", (event) => {
+      const isTargetInsideDrawer = this.#navigationDrawer.contains(event.target);
+      const isTargetInsideButton = this.#drawerButton.contains(event.target);
+
+      if (!(isTargetInsideDrawer || isTargetInsideButton)) {
+        this.#closeDrawerEventHandler();
+      }
+
+      this.#navigationDrawer.querySelectorAll(".nav-link").forEach((link) => {
+        if (link.contains(event.target)) {
+          this.#closeDrawerEventHandler();
+        }
+      });
     });
 
     this.#applyDrawerAccessibility();
@@ -126,6 +154,34 @@ class App {
     });
   }
 
+  async #setupPushNotification() {
+    const pushNotificationTools = document.getElementById("push-notification-tools");
+
+    if (!pushNotificationTools) {
+      return;
+    }
+
+    pushNotificationTools.innerHTML = generateSubscribeButtonTemplate();
+    const isSubscribed = await isCurrentPushSubscriptionAvailable();
+
+    if (isSubscribed) {
+      pushNotificationTools.innerHTML = generateUnsubscribeButtonTemplate();
+      document.getElementById("unsubscribe-button").addEventListener("click", () => {
+        unsubscribe().finally(() => {
+          this.#setupPushNotification();
+        });
+      });
+
+      return;
+    }
+
+    document.getElementById("subscribe-button").addEventListener("click", () => {
+      subscribe().finally(() => {
+        this.#setupPushNotification();
+      });
+    });
+  }
+
   async renderPage() {
     // Close navigation if it's open
     if (this.#navigationDrawer.classList.contains("open")) {
@@ -149,6 +205,10 @@ class App {
     transition.updateCallbackDone.then(() => {
       scrollTo({ top: 0, behavior: "instant" });
       this.#setupNavigationList();
+
+      if (isServiceWorkerAvailable()) {
+        this.#setupPushNotification();
+      }
     });
   }
 }

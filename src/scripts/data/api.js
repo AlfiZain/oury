@@ -10,6 +10,8 @@ const ENDPOINTS = {
   ADD_NEW_STORY: `${CONFIG.BASE_URL}/stories`,
   GET_ALL_STORIES: `${CONFIG.BASE_URL}/stories`,
   DETAIL_STORY: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
+  SUBSCRIBE: `${CONFIG.BASE_URL}/notifications/subscribe`,
+  UNSUBSCRIBE: `${CONFIG.BASE_URL}/notifications/subscribe`,
 };
 
 export async function getRegistered({ name, email, password }) {
@@ -76,6 +78,7 @@ export async function getAllStories(page, size, location) {
 
   const queryParams = new URLSearchParams();
 
+  // Allows the function called with parameters or not
   if (page !== undefined && page !== null) queryParams.append("page", page);
   if (size !== undefined && size !== null) queryParams.append("size", size);
   if (location !== undefined && location !== null) queryParams.append("location", location);
@@ -101,6 +104,51 @@ export async function detailStory(id) {
 
   const fetchResponse = await fetch(ENDPOINTS.DETAIL_STORY(id), {
     headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  const json = await fetchResponse.json();
+
+  return {
+    ...json,
+    ok: fetchResponse.ok,
+  };
+}
+
+export async function subscribePushNotification({ endpoint, keys: { p256dh, auth } }) {
+  const accessToken = getAccessToken();
+  const data = JSON.stringify({
+    endpoint,
+    keys: { p256dh, auth },
+  });
+
+  const fetchResponse = await fetch(ENDPOINTS.SUBSCRIBE, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: data,
+  });
+
+  const json = await fetchResponse.json();
+
+  return {
+    ...json,
+    ok: fetchResponse.ok,
+  };
+}
+
+export async function unsubscribePushNotification({ endpoint }) {
+  const accessToken = getAccessToken();
+  const data = JSON.stringify({ endpoint });
+
+  const fetchResponse = await fetch(ENDPOINTS.UNSUBSCRIBE, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: data,
   });
 
   const json = await fetchResponse.json();
