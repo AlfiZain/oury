@@ -9,7 +9,7 @@ const ENDPOINTS = {
   // Story
   ADD_NEW_STORY: `${CONFIG.BASE_URL}/stories`,
   GET_ALL_STORIES: `${CONFIG.BASE_URL}/stories`,
-  DETAIL_STORY: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
+  GET_STORY_BY_ID: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
   SUBSCRIBE: `${CONFIG.BASE_URL}/notifications/subscribe`,
   UNSUBSCRIBE: `${CONFIG.BASE_URL}/notifications/subscribe`,
 };
@@ -99,10 +99,10 @@ export async function getAllStories(page, size, location) {
   };
 }
 
-export async function detailStory(id) {
+export async function getStoryById(id) {
   const accessToken = getAccessToken();
 
-  const fetchResponse = await fetch(ENDPOINTS.DETAIL_STORY(id), {
+  const fetchResponse = await fetch(ENDPOINTS.GET_STORY_BY_ID(id), {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 

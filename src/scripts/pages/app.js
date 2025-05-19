@@ -189,7 +189,8 @@ class App {
     }
 
     const url = getActiveRoute();
-    const route = routes[url];
+    // If url is null, fallback to not found page
+    const route = routes[url] || routes["*"];
 
     // Get page instance
     const page = route();

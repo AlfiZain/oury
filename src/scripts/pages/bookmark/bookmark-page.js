@@ -1,18 +1,18 @@
 import Swal from "sweetalert2";
 import { generateBookmarkStoryButtonTemplate, generateLoaderAbsoluteTemplate, generateStoriesListEmptyTemplate, generateStoriesListErrorTemplate, generateStoryItemTemplate, generateUnbookmarkStoryButtonTemplate } from "../../template.js";
 import Map from "../../utils/map.js";
-import HomePresenter from "./home-presenter.js";
 import * as StoryAPI from "../../data/api.js";
 import Database from "../../data/database.js";
+import BookmarkPresenter from "./bookmark-presenter.js";
 
-export default class HomePage {
+export default class BookmarkPage {
   #presenter = null;
   #map = null;
 
   async render() {
     return `
       <section id="map-section" class="map-section">
-        <h1 class="map-title">Authors Across the Map</h1>
+        <h1 class="map-title">Bookmarked Authors</h1>
         <div class="map-container">
           <div id="map" class="map"></div>
           <div id="map-loading" class="map-loading"></div>
@@ -20,7 +20,7 @@ export default class HomePage {
       </section>
 
       <section id="stories-section" class="stories-section">
-        <h2 class="stories-title">Our Stories</h2>
+        <h2 class="stories-title">Bookmarked Stories</h2>
         <div class="stories-list-container">
           <div id="stories-list" class="stories-list"></div>
           <div id="stories-list-loading-container"></div>
@@ -30,7 +30,7 @@ export default class HomePage {
   }
 
   async afterRender() {
-    this.#presenter = new HomePresenter({
+    this.#presenter = new BookmarkPresenter({
       view: this,
       apiModel: StoryAPI,
       dbModel: Database,
@@ -39,7 +39,7 @@ export default class HomePage {
     await this.#presenter.initialStoriesAndMap();
   }
 
-  populateStoriesList(message, stories) {
+  populateStoriesList(stories) {
     if (stories.length <= 0) {
       this.populateStoriesListEmpty();
       return;
